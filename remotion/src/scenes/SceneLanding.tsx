@@ -79,7 +79,7 @@ export const SceneLanding: React.FC = () => {
             letterSpacing: 0.5,
           }}
         >
-          🇬🇲  THE GAMBIA · CHILD PROTECTION
+          ★  THE GAMBIA · CHILD PROTECTION
         </div>
         <h1
           style={{
