@@ -1,1 +1,4 @@
 project_id = "gypwwwobxfxsowgpgoxw"
+
+[functions.generate-narration]
+verify_jwt = false
