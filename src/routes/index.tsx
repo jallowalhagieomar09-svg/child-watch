@@ -16,7 +16,59 @@ import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
+const SITE_URL = "https://id-preview--324347b9-9e7d-49bc-a301-ed9cb52087c7.lovable.app";
+const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
+const PAGE_TITLE = "Child Voice Gambia — Report child rights issues safely";
+const PAGE_DESCRIPTION =
+  "Confidential, multilingual reporting of child rights issues in The Gambia. Report abuse, neglect, child labour, FGM, early marriage and trafficking in Mandinka, Wolof, Fula, Jola or English — anonymously if you wish.";
+
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: PAGE_TITLE },
+      { name: "description", content: PAGE_DESCRIPTION },
+      {
+        name: "keywords",
+        content:
+          "child rights Gambia, report child abuse Gambia, FGM Gambia, child marriage, child protection West Africa, anonymous reporting Gambia",
+      },
+      { name: "author", content: "Child Voice Gambia" },
+      { name: "robots", content: "index, follow" },
+
+      // Open Graph (Facebook, WhatsApp, LinkedIn)
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Child Voice Gambia" },
+      { property: "og:title", content: PAGE_TITLE },
+      { property: "og:description", content: PAGE_DESCRIPTION },
+      { property: "og:url", content: SITE_URL },
+      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:secure_url", content: OG_IMAGE },
+      { property: "og:image:type", content: "image/jpeg" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "640" },
+      {
+        property: "og:image:alt",
+        content:
+          "Children of The Gambia standing together under a protective shield at sunrise.",
+      },
+      { property: "og:locale", content: "en_GB" },
+
+      // Twitter / X
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: PAGE_TITLE },
+      { name: "twitter:description", content: PAGE_DESCRIPTION },
+      { name: "twitter:image", content: OG_IMAGE },
+      {
+        name: "twitter:image:alt",
+        content:
+          "Children of The Gambia standing together under a protective shield at sunrise.",
+      },
+
+      // WhatsApp prefers larger previews when an image is present
+      { name: "theme-color", content: "#0ea5e9" },
+    ],
+    links: [{ rel: "canonical", href: SITE_URL }],
+  }),
   component: Index,
 });
 
