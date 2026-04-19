@@ -1,4 +1,8 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { I18nProvider } from "@/lib/i18n";
+import { AuthProvider } from "@/hooks/useAuth";
 
 import appCss from "../styles.css?url";
 
@@ -8,9 +12,6 @@ function NotFoundComponent() {
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
         <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
         <div className="mt-6">
           <Link
             to="/"
@@ -29,21 +30,21 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Child Voice Gambia — Report child rights issues" },
+      {
+        name: "description",
+        content:
+          "Confidential reporting of child rights issues in The Gambia, in Mandinka, Wolof, Fula, Jola, and English.",
+      },
+      { property: "og:title", content: "Child Voice Gambia" },
+      {
+        property: "og:description",
+        content: "Report child rights issues safely, in your language.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-    ],
+    links: [{ rel: "stylesheet", href: appCss }],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -65,5 +66,14 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  return <Outlet />;
+  return (
+    <I18nProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Outlet />
+          <Toaster richColors position="top-center" />
+        </TooltipProvider>
+      </AuthProvider>
+    </I18nProvider>
+  );
 }
