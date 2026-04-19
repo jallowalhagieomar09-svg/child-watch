@@ -15,11 +15,13 @@ export const transcribeAudio = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) {
+      console.error("Transcription: LOVABLE_API_KEY missing");
       return { text: "", error: "Transcription service not configured" };
     }
 
     try {
       const dataUrl = `data:${data.mimeType};base64,${data.audioBase64}`;
+      const format = (data.mimeType.split("/")[1] || "webm").split(";")[0];
       const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -27,20 +29,19 @@ export const transcribeAudio = createServerFn({ method: "POST" })
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
+          model: "google/gemini-2.5-pro",
           messages: [
-            {
-              role: "system",
-              content:
-                "You are a transcription assistant. Transcribe the user's audio accurately. The audio may be in English, Mandinka, Wolof, Fula (Pulaar), or Jola. Output only the transcribed text — no commentary.",
-            },
             {
               role: "user",
               content: [
-                { type: "text", text: "Transcribe this audio." },
+                {
+                  type: "text",
+                  text:
+                    "Transcribe this audio recording verbatim. The audio may be in English, Mandinka, Wolof, Fula (Pulaar), or Jola. Output ONLY the transcribed text — no commentary, no labels, no quotes. If the audio is silent or unintelligible, respond with: [unintelligible]",
+                },
                 {
                   type: "input_audio",
-                  input_audio: { data: dataUrl, format: data.mimeType.split("/")[1] || "webm" },
+                  input_audio: { data: dataUrl, format },
                 },
               ],
             },
@@ -58,6 +59,7 @@ export const transcribeAudio = createServerFn({ method: "POST" })
         choices?: { message?: { content?: string } }[];
       };
       const text = json.choices?.[0]?.message?.content?.trim() ?? "";
+      console.log("Transcription succeeded, length:", text.length);
       return { text, error: null as string | null };
     } catch (err) {
       console.error("Transcription error:", err);
