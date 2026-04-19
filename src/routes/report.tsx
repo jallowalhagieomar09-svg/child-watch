@@ -161,29 +161,24 @@ function ReportFlow() {
     const agency = cat?.agency ?? "both";
 
     try {
-      // 1) Insert report
-      const { data: inserted, error } = await supabase
-        .from("reports")
-        .insert({
-          tracking_code: code,
-          reporter_user_id: user?.id ?? null,
-          category,
-          agency,
-          language: lang,
-          description: description.trim() || null,
-          contact_name: contactName.trim() || null,
-          contact_phone: contactPhone.trim() || null,
-          contact_email: contactEmail.trim() || null,
-          latitude: coords?.lat ?? null,
-          longitude: coords?.lng ?? null,
-          region: region.trim() || null,
-          town: town.trim() || null,
-        })
-        .select("id")
-        .single();
+      // 1) Insert report via SECURITY DEFINER RPC (works for anon + authed)
+      const { data: newId, error } = await supabase.rpc("submit_report", {
+        _tracking_code: code,
+        _category: category,
+        _agency: agency,
+        _language: lang,
+        _description: description,
+        _contact_name: contactName,
+        _contact_phone: contactPhone,
+        _contact_email: contactEmail,
+        _latitude: coords?.lat ?? null,
+        _longitude: coords?.lng ?? null,
+        _region: region,
+        _town: town,
+      });
 
-      if (error || !inserted) throw error ?? new Error("Insert failed");
-      const reportId = inserted.id as string;
+      if (error || !newId) throw error ?? new Error("Insert failed");
+      const reportId = newId as string;
 
       // 2) Upload media + insert rows
       for (const m of media) {
