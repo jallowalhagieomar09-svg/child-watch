@@ -171,8 +171,8 @@ function ReportFlow() {
         _contact_name: contactName,
         _contact_phone: contactPhone,
         _contact_email: contactEmail,
-        _latitude: coords?.lat ?? null,
-        _longitude: coords?.lng ?? null,
+        _latitude: coords?.lat ?? undefined,
+        _longitude: coords?.lng ?? undefined,
         _region: region,
         _town: town,
       });
