@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2, Sparkles } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { useAuth } from "@/hooks/useAuth";
 import { useI18n } from "@/lib/i18n";
@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { STATUSES, type ReportStatus } from "@/lib/report-utils";
+import { retranscribeMedia } from "@/lib/transcribe.functions";
 
 export const Route = createFileRoute("/staff/reports/$id")({
   component: ReportDetail,
@@ -69,6 +70,7 @@ function ReportDetail() {
   const [newStatus, setNewStatus] = useState<ReportStatus | "">("");
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
+  const [transcribingId, setTranscribingId] = useState<string | null>(null);
 
   const load = async () => {
     const { data: r } = await supabase
@@ -202,12 +204,44 @@ function ReportDetail() {
                   {m.kind === "audio" && m.signedUrl && (
                     <audio src={m.signedUrl} controls className="w-full" />
                   )}
-                  {m.transcription && (
+                  {m.transcription ? (
                     <p className="mt-2 text-xs text-muted-foreground">
                       <span className="font-semibold">Transcript: </span>
                       {m.transcription}
                     </p>
-                  )}
+                  ) : m.kind === "audio" ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="mt-2 w-full"
+                      disabled={transcribingId === m.id}
+                      onClick={async () => {
+                        setTranscribingId(m.id);
+                        try {
+                          const result = await retranscribeMedia({ data: { mediaId: m.id } });
+                          if (result.error) {
+                            toast.error(result.error);
+                          } else {
+                            toast.success("Transcribed");
+                            await load();
+                          }
+                        } catch (e) {
+                          console.error(e);
+                          toast.error("Transcription failed");
+                        } finally {
+                          setTranscribingId(null);
+                        }
+                      }}
+                    >
+                      {transcribingId === m.id ? (
+                        <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                      ) : (
+                        <Sparkles className="mr-2 h-3 w-3" />
+                      )}
+                      Transcribe audio
+                    </Button>
+                  ) : null}
                 </div>
               ))}
             </div>
