@@ -46,7 +46,7 @@ function StaffDashboard() {
       return;
     }
     if (roles.length === 0) {
-      void navigate({ to: "/" });
+      void navigate({ to: "/my-reports" });
       return;
     }
     void supabase
