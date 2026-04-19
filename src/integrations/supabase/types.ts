@@ -14,16 +14,251 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          preferred_language: Database["public"]["Enums"]["report_language"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          preferred_language?: Database["public"]["Enums"]["report_language"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          preferred_language?: Database["public"]["Enums"]["report_language"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      report_media: {
+        Row: {
+          created_at: string
+          id: string
+          kind: Database["public"]["Enums"]["media_kind"]
+          mime_type: string | null
+          report_id: string
+          size_bytes: number | null
+          storage_path: string
+          transcription: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: Database["public"]["Enums"]["media_kind"]
+          mime_type?: string | null
+          report_id: string
+          size_bytes?: number | null
+          storage_path: string
+          transcription?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["media_kind"]
+          mime_type?: string | null
+          report_id?: string
+          size_bytes?: number | null
+          storage_path?: string
+          transcription?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_media_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      report_status_events: {
+        Row: {
+          actor_user_id: string | null
+          created_at: string
+          from_status: Database["public"]["Enums"]["report_status"] | null
+          id: string
+          is_internal: boolean
+          note: string | null
+          report_id: string
+          to_status: Database["public"]["Enums"]["report_status"] | null
+        }
+        Insert: {
+          actor_user_id?: string | null
+          created_at?: string
+          from_status?: Database["public"]["Enums"]["report_status"] | null
+          id?: string
+          is_internal?: boolean
+          note?: string | null
+          report_id: string
+          to_status?: Database["public"]["Enums"]["report_status"] | null
+        }
+        Update: {
+          actor_user_id?: string | null
+          created_at?: string
+          from_status?: Database["public"]["Enums"]["report_status"] | null
+          id?: string
+          is_internal?: boolean
+          note?: string | null
+          report_id?: string
+          to_status?: Database["public"]["Enums"]["report_status"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_status_events_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reports: {
+        Row: {
+          agency: Database["public"]["Enums"]["report_agency"]
+          assigned_to: string | null
+          category: Database["public"]["Enums"]["report_category"]
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          description: string | null
+          id: string
+          language: Database["public"]["Enums"]["report_language"]
+          latitude: number | null
+          longitude: number | null
+          region: string | null
+          reporter_user_id: string | null
+          status: Database["public"]["Enums"]["report_status"]
+          town: string | null
+          tracking_code: string
+          updated_at: string
+        }
+        Insert: {
+          agency: Database["public"]["Enums"]["report_agency"]
+          assigned_to?: string | null
+          category: Database["public"]["Enums"]["report_category"]
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          language?: Database["public"]["Enums"]["report_language"]
+          latitude?: number | null
+          longitude?: number | null
+          region?: string | null
+          reporter_user_id?: string | null
+          status?: Database["public"]["Enums"]["report_status"]
+          town?: string | null
+          tracking_code: string
+          updated_at?: string
+        }
+        Update: {
+          agency?: Database["public"]["Enums"]["report_agency"]
+          assigned_to?: string | null
+          category?: Database["public"]["Enums"]["report_category"]
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          language?: Database["public"]["Enums"]["report_language"]
+          latitude?: number | null
+          longitude?: number | null
+          region?: string | null
+          reporter_user_id?: string | null
+          status?: Database["public"]["Enums"]["report_status"]
+          town?: string | null
+          tracking_code?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
+      lookup_report_by_code: {
+        Args: { _code: string }
+        Returns: {
+          category: Database["public"]["Enums"]["report_category"]
+          created_at: string
+          language: Database["public"]["Enums"]["report_language"]
+          region: string
+          status: Database["public"]["Enums"]["report_status"]
+          tracking_code: string
+          updated_at: string
+        }[]
+      }
+      public_stats_overview: { Args: never; Returns: Json }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "police" | "welfare"
+      media_kind: "image" | "video" | "audio"
+      report_agency: "police" | "welfare" | "both"
+      report_category:
+        | "abuse"
+        | "neglect"
+        | "child_labor"
+        | "trafficking"
+        | "early_marriage"
+        | "school_safety"
+        | "other"
+      report_language: "en" | "mandinka" | "wolof" | "fula" | "jola"
+      report_status:
+        | "received"
+        | "under_review"
+        | "in_progress"
+        | "resolved"
+        | "closed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +385,27 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "police", "welfare"],
+      media_kind: ["image", "video", "audio"],
+      report_agency: ["police", "welfare", "both"],
+      report_category: [
+        "abuse",
+        "neglect",
+        "child_labor",
+        "trafficking",
+        "early_marriage",
+        "school_safety",
+        "other",
+      ],
+      report_language: ["en", "mandinka", "wolof", "fula", "jola"],
+      report_status: [
+        "received",
+        "under_review",
+        "in_progress",
+        "resolved",
+        "closed",
+      ],
+    },
   },
 } as const
