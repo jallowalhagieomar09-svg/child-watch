@@ -43,10 +43,10 @@ export const SceneStaffDashboard: React.FC = () => {
               </h2>
               <div style={{ marginTop: 10, display: "flex", gap: 8 }}>
                 <div style={{ padding: "6px 14px", background: "#EDE9FE", color: "#5B21B6", borderRadius: 999, fontSize: 16, fontWeight: 600 }}>
-                  🛡 admin
+                  ◆ admin
                 </div>
                 <div style={{ padding: "6px 14px", background: "#DBEAFE", color: "#1E40AF", borderRadius: 999, fontSize: 16, fontWeight: 600 }}>
-                  🛡 police
+                  ◆ police
                 </div>
               </div>
             </div>

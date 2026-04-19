@@ -81,7 +81,7 @@ export const SceneTracking: React.FC = () => {
                 fontWeight: 600,
               }}
             >
-              🔍  Lookup
+              ⌕  Lookup
             </div>
           </div>
 
@@ -117,9 +117,9 @@ export const SceneTracking: React.FC = () => {
                 </div>
               </div>
               <div style={{ marginTop: 18, fontSize: 20, color: "#5B6478", lineHeight: 1.6 }}>
-                <div>📁 Category: Abuse</div>
-                <div>📍 Region: Greater Banjul</div>
-                <div>🕒 Submitted: today, 14:32</div>
+                <div>Category: Abuse</div>
+                <div>Region: Greater Banjul</div>
+                <div>Submitted: today, 14:32</div>
               </div>
             </div>
           )}

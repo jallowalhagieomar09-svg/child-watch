@@ -49,7 +49,7 @@ export const BrowserChrome: React.FC<{
             minWidth: 360,
           }}
         >
-          🔒 {url}
+          ◉ {url}
         </div>
       </div>
       <div style={{ position: "relative", flex: 1, overflow: "hidden" }}>{children}</div>
