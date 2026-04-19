@@ -239,6 +239,23 @@ export type Database = {
         }[]
       }
       public_stats_overview: { Args: never; Returns: Json }
+      submit_report: {
+        Args: {
+          _agency: Database["public"]["Enums"]["report_agency"]
+          _category: Database["public"]["Enums"]["report_category"]
+          _contact_email?: string
+          _contact_name?: string
+          _contact_phone?: string
+          _description?: string
+          _language: Database["public"]["Enums"]["report_language"]
+          _latitude?: number
+          _longitude?: number
+          _region?: string
+          _town?: string
+          _tracking_code: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "admin" | "police" | "welfare"
