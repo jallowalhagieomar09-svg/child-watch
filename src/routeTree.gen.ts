@@ -10,14 +10,24 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrackRouteImport } from './routes/track'
+import { Route as StatsRouteImport } from './routes/stats'
 import { Route as ReportRouteImport } from './routes/report'
 import { Route as MyReportsRouteImport } from './routes/my-reports'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StaffIndexRouteImport } from './routes/staff.index'
+import { Route as StaffLoginRouteImport } from './routes/staff.login'
+import { Route as StaffAdminRouteImport } from './routes/staff.admin'
+import { Route as StaffReportsIdRouteImport } from './routes/staff.reports.$id'
 
 const TrackRoute = TrackRouteImport.update({
   id: '/track',
   path: '/track',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatsRoute = StatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReportRoute = ReportRouteImport.update({
@@ -40,20 +50,50 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StaffIndexRoute = StaffIndexRouteImport.update({
+  id: '/staff/',
+  path: '/staff/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StaffLoginRoute = StaffLoginRouteImport.update({
+  id: '/staff/login',
+  path: '/staff/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StaffAdminRoute = StaffAdminRouteImport.update({
+  id: '/staff/admin',
+  path: '/staff/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StaffReportsIdRoute = StaffReportsIdRouteImport.update({
+  id: '/staff/reports/$id',
+  path: '/staff/reports/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/my-reports': typeof MyReportsRoute
   '/report': typeof ReportRoute
+  '/stats': typeof StatsRoute
   '/track': typeof TrackRoute
+  '/staff/admin': typeof StaffAdminRoute
+  '/staff/login': typeof StaffLoginRoute
+  '/staff/': typeof StaffIndexRoute
+  '/staff/reports/$id': typeof StaffReportsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/my-reports': typeof MyReportsRoute
   '/report': typeof ReportRoute
+  '/stats': typeof StatsRoute
   '/track': typeof TrackRoute
+  '/staff/admin': typeof StaffAdminRoute
+  '/staff/login': typeof StaffLoginRoute
+  '/staff': typeof StaffIndexRoute
+  '/staff/reports/$id': typeof StaffReportsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,14 +101,50 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/my-reports': typeof MyReportsRoute
   '/report': typeof ReportRoute
+  '/stats': typeof StatsRoute
   '/track': typeof TrackRoute
+  '/staff/admin': typeof StaffAdminRoute
+  '/staff/login': typeof StaffLoginRoute
+  '/staff/': typeof StaffIndexRoute
+  '/staff/reports/$id': typeof StaffReportsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/my-reports' | '/report' | '/track'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/my-reports'
+    | '/report'
+    | '/stats'
+    | '/track'
+    | '/staff/admin'
+    | '/staff/login'
+    | '/staff/'
+    | '/staff/reports/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/my-reports' | '/report' | '/track'
-  id: '__root__' | '/' | '/auth' | '/my-reports' | '/report' | '/track'
+  to:
+    | '/'
+    | '/auth'
+    | '/my-reports'
+    | '/report'
+    | '/stats'
+    | '/track'
+    | '/staff/admin'
+    | '/staff/login'
+    | '/staff'
+    | '/staff/reports/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/my-reports'
+    | '/report'
+    | '/stats'
+    | '/track'
+    | '/staff/admin'
+    | '/staff/login'
+    | '/staff/'
+    | '/staff/reports/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,7 +152,12 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   MyReportsRoute: typeof MyReportsRoute
   ReportRoute: typeof ReportRoute
+  StatsRoute: typeof StatsRoute
   TrackRoute: typeof TrackRoute
+  StaffAdminRoute: typeof StaffAdminRoute
+  StaffLoginRoute: typeof StaffLoginRoute
+  StaffIndexRoute: typeof StaffIndexRoute
+  StaffReportsIdRoute: typeof StaffReportsIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -86,6 +167,13 @@ declare module '@tanstack/react-router' {
       path: '/track'
       fullPath: '/track'
       preLoaderRoute: typeof TrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stats': {
+      id: '/stats'
+      path: '/stats'
+      fullPath: '/stats'
+      preLoaderRoute: typeof StatsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/report': {
@@ -116,6 +204,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/staff/': {
+      id: '/staff/'
+      path: '/staff'
+      fullPath: '/staff/'
+      preLoaderRoute: typeof StaffIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/staff/login': {
+      id: '/staff/login'
+      path: '/staff/login'
+      fullPath: '/staff/login'
+      preLoaderRoute: typeof StaffLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/staff/admin': {
+      id: '/staff/admin'
+      path: '/staff/admin'
+      fullPath: '/staff/admin'
+      preLoaderRoute: typeof StaffAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/staff/reports/$id': {
+      id: '/staff/reports/$id'
+      path: '/staff/reports/$id'
+      fullPath: '/staff/reports/$id'
+      preLoaderRoute: typeof StaffReportsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -124,7 +240,12 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   MyReportsRoute: MyReportsRoute,
   ReportRoute: ReportRoute,
+  StatsRoute: StatsRoute,
   TrackRoute: TrackRoute,
+  StaffAdminRoute: StaffAdminRoute,
+  StaffLoginRoute: StaffLoginRoute,
+  StaffIndexRoute: StaffIndexRoute,
+  StaffReportsIdRoute: StaffReportsIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
