@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrackRouteImport } from './routes/track'
 import { Route as StatsRouteImport } from './routes/stats'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ReportRouteImport } from './routes/report'
 import { Route as MyReportsRouteImport } from './routes/my-reports'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -28,6 +29,11 @@ const TrackRoute = TrackRouteImport.update({
 const StatsRoute = StatsRouteImport.update({
   id: '/stats',
   path: '/stats',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReportRoute = ReportRouteImport.update({
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/my-reports': typeof MyReportsRoute
   '/report': typeof ReportRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/stats': typeof StatsRoute
   '/track': typeof TrackRoute
   '/staff/admin': typeof StaffAdminRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/my-reports': typeof MyReportsRoute
   '/report': typeof ReportRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/stats': typeof StatsRoute
   '/track': typeof TrackRoute
   '/staff/admin': typeof StaffAdminRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/my-reports': typeof MyReportsRoute
   '/report': typeof ReportRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/stats': typeof StatsRoute
   '/track': typeof TrackRoute
   '/staff/admin': typeof StaffAdminRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/my-reports'
     | '/report'
+    | '/reset-password'
     | '/stats'
     | '/track'
     | '/staff/admin'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/my-reports'
     | '/report'
+    | '/reset-password'
     | '/stats'
     | '/track'
     | '/staff/admin'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/my-reports'
     | '/report'
+    | '/reset-password'
     | '/stats'
     | '/track'
     | '/staff/admin'
@@ -152,6 +164,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   MyReportsRoute: typeof MyReportsRoute
   ReportRoute: typeof ReportRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   StatsRoute: typeof StatsRoute
   TrackRoute: typeof TrackRoute
   StaffAdminRoute: typeof StaffAdminRoute
@@ -174,6 +187,13 @@ declare module '@tanstack/react-router' {
       path: '/stats'
       fullPath: '/stats'
       preLoaderRoute: typeof StatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/report': {
@@ -240,6 +260,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   MyReportsRoute: MyReportsRoute,
   ReportRoute: ReportRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   StatsRoute: StatsRoute,
   TrackRoute: TrackRoute,
   StaffAdminRoute: StaffAdminRoute,
