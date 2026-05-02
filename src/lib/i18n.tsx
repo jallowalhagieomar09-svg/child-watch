@@ -13,7 +13,7 @@ export const LANGUAGES: { code: Lang; label: string; native: string }[] = [
 type Dict = Record<string, string>;
 
 const en: Dict = {
-  app_name: "Child Voice Gambia",
+  app_name: "Child Voice GM",
   tagline: "Report child rights issues safely, in your language.",
   report_now: "Report an issue",
   track_report: "Track a report",
