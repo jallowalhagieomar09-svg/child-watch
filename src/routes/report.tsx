@@ -25,6 +25,7 @@ import { useI18n } from "@/lib/i18n";
 import { CATEGORIES, generateTrackingCode, type ReportCategory } from "@/lib/report-utils";
 import { supabase } from "@/integrations/supabase/client";
 import { transcribeAudio } from "@/lib/transcribe.functions";
+import { enqueueReport } from "@/lib/offline-queue";
 
 export const Route = createFileRoute("/report")({
   component: ReportFlow,
@@ -160,22 +161,63 @@ function ReportFlow() {
     const cat = CATEGORIES.find((c) => c.key === category);
     const agency = cat?.agency ?? "both";
 
+    const payload = {
+      _tracking_code: code,
+      _category: category,
+      _agency: agency,
+      _language: lang,
+      _description: description,
+      _contact_name: contactName,
+      _contact_phone: contactPhone,
+      _contact_email: contactEmail,
+      _latitude: coords?.lat ?? undefined,
+      _longitude: coords?.lng ?? undefined,
+      _region: region,
+      _town: town,
+    };
+
+    // Offline path: queue locally — sync will replay it when reconnected.
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      try {
+        await enqueueReport({
+          id: crypto.randomUUID(),
+          trackingCode: code,
+          payload,
+          media: media.map((m) => ({
+            id: m.id,
+            kind: m.kind,
+            blob: m.file,
+            filename: m.file.name,
+            mimeType: m.file.type,
+          })),
+          createdAt: Date.now(),
+          attempts: 0,
+        });
+        // Hint the SW to flush as soon as connectivity returns.
+        try {
+          const reg = await navigator.serviceWorker?.ready;
+          const sync = (reg as unknown as {
+            sync?: { register: (tag: string) => Promise<void> };
+          })?.sync;
+          await sync?.register("flush-pending-reports");
+        } catch {
+          /* not supported */
+        }
+        toast.success("Saved offline. We'll submit it when you reconnect.");
+        setTrackingCode(code);
+        setStep(5);
+      } catch (e) {
+        console.error(e);
+        toast.error(t("error_generic"));
+      } finally {
+        setSubmitting(false);
+      }
+      return;
+    }
+
     try {
       // 1) Insert report via SECURITY DEFINER RPC (works for anon + authed)
-      const { data: newId, error } = await supabase.rpc("submit_report", {
-        _tracking_code: code,
-        _category: category,
-        _agency: agency,
-        _language: lang,
-        _description: description,
-        _contact_name: contactName,
-        _contact_phone: contactPhone,
-        _contact_email: contactEmail,
-        _latitude: coords?.lat ?? undefined,
-        _longitude: coords?.lng ?? undefined,
-        _region: region,
-        _town: town,
-      });
+      const { data: newId, error } = await supabase.rpc("submit_report", payload);
 
       if (error || !newId) throw error ?? new Error("Insert failed");
       const reportId = newId as string;
@@ -219,7 +261,28 @@ function ReportFlow() {
       setStep(5);
     } catch (e) {
       console.error(e);
-      toast.error(t("error_generic"));
+      // Network mid-submission — fall back to offline queue so we don't lose data.
+      try {
+        await enqueueReport({
+          id: crypto.randomUUID(),
+          trackingCode: code,
+          payload,
+          media: media.map((m) => ({
+            id: m.id,
+            kind: m.kind,
+            blob: m.file,
+            filename: m.file.name,
+            mimeType: m.file.type,
+          })),
+          createdAt: Date.now(),
+          attempts: 0,
+        });
+        toast.success("Saved offline. We'll submit it when you reconnect.");
+        setTrackingCode(code);
+        setStep(5);
+      } catch {
+        toast.error(t("error_generic"));
+      }
     } finally {
       setSubmitting(false);
     }
