@@ -13,6 +13,7 @@ import { Route as TrackRouteImport } from './routes/track'
 import { Route as StatsRouteImport } from './routes/stats'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ReportRouteImport } from './routes/report'
+import { Route as OfflineRouteImport } from './routes/offline'
 import { Route as MyReportsRouteImport } from './routes/my-reports'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
@@ -39,6 +40,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const ReportRoute = ReportRouteImport.update({
   id: '/report',
   path: '/report',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OfflineRoute = OfflineRouteImport.update({
+  id: '/offline',
+  path: '/offline',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MyReportsRoute = MyReportsRouteImport.update({
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/my-reports': typeof MyReportsRoute
+  '/offline': typeof OfflineRoute
   '/report': typeof ReportRoute
   '/reset-password': typeof ResetPasswordRoute
   '/stats': typeof StatsRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/my-reports': typeof MyReportsRoute
+  '/offline': typeof OfflineRoute
   '/report': typeof ReportRoute
   '/reset-password': typeof ResetPasswordRoute
   '/stats': typeof StatsRoute
@@ -108,6 +116,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/my-reports': typeof MyReportsRoute
+  '/offline': typeof OfflineRoute
   '/report': typeof ReportRoute
   '/reset-password': typeof ResetPasswordRoute
   '/stats': typeof StatsRoute
@@ -123,6 +132,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/my-reports'
+    | '/offline'
     | '/report'
     | '/reset-password'
     | '/stats'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/my-reports'
+    | '/offline'
     | '/report'
     | '/reset-password'
     | '/stats'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/my-reports'
+    | '/offline'
     | '/report'
     | '/reset-password'
     | '/stats'
@@ -163,6 +175,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   MyReportsRoute: typeof MyReportsRoute
+  OfflineRoute: typeof OfflineRoute
   ReportRoute: typeof ReportRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   StatsRoute: typeof StatsRoute
@@ -201,6 +214,13 @@ declare module '@tanstack/react-router' {
       path: '/report'
       fullPath: '/report'
       preLoaderRoute: typeof ReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/offline': {
+      id: '/offline'
+      path: '/offline'
+      fullPath: '/offline'
+      preLoaderRoute: typeof OfflineRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/my-reports': {
@@ -259,6 +279,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   MyReportsRoute: MyReportsRoute,
+  OfflineRoute: OfflineRoute,
   ReportRoute: ReportRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   StatsRoute: StatsRoute,
