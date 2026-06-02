@@ -1,8 +1,12 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { I18nProvider } from "@/lib/i18n";
 import { AuthProvider } from "@/hooks/useAuth";
+import { OnlineStatusBanner } from "@/components/OnlineStatusBanner";
+import { InstallPrompt } from "@/components/InstallPrompt";
+import { registerServiceWorker } from "@/lib/pwa";
 
 import appCss from "../styles.css?url";
 
@@ -83,11 +87,17 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
+  useEffect(() => {
+    void registerServiceWorker();
+  }, []);
+
   return (
     <I18nProvider>
       <AuthProvider>
         <TooltipProvider>
+          <OnlineStatusBanner />
           <Outlet />
+          <InstallPrompt />
           <Toaster richColors position="top-center" />
         </TooltipProvider>
       </AuthProvider>
