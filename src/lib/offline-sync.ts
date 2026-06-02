@@ -28,7 +28,10 @@ async function blobToBase64(blob: Blob): Promise<string> {
 
 async function flushOne(r: PendingReport): Promise<boolean> {
   try {
-    const { data: newId, error } = await supabase.rpc("submit_report", r.payload);
+    const { data: newId, error } = await supabase.rpc(
+      "submit_report",
+      r.payload as Parameters<typeof supabase.rpc<"submit_report">>[1]
+    );
     if (error || !newId) throw error ?? new Error("submit_report failed");
     const reportId = newId as string;
 
