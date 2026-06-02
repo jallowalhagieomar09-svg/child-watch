@@ -30,7 +30,7 @@ async function flushOne(r: PendingReport): Promise<boolean> {
   try {
     const { data: newId, error } = await supabase.rpc(
       "submit_report",
-      r.payload as Parameters<typeof supabase.rpc<"submit_report">>[1]
+      r.payload as unknown as Parameters<typeof supabase.rpc>[1]
     );
     if (error || !newId) throw error ?? new Error("submit_report failed");
     const reportId = newId as string;
