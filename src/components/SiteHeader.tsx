@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Shield } from "lucide-react";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { ThemeToggle } from "./ThemeToggle";
 import { useI18n } from "@/lib/i18n";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ export function SiteHeader() {
 
         <nav className="flex items-center gap-2">
           <LanguageSwitcher compact />
+          <ThemeToggle />
           {user ? (
             <>
               {isStaff ? (

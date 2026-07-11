@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { GoogleSignInButton } from "@/components/GoogleSignInButton";
 
 export const Route = createFileRoute("/auth")({
   component: AuthPage,
@@ -46,7 +47,15 @@ function AuthPage() {
           <h1 className="text-2xl font-semibold">
             {mode === "signin" ? t("sign_in") : t("sign_up")}
           </h1>
-          <form onSubmit={onSubmit} className="mt-6 space-y-4">
+          <div className="mt-6">
+            <GoogleSignInButton />
+          </div>
+          <div className="my-4 flex items-center gap-3">
+            <div className="h-px flex-1 bg-border" />
+            <span className="text-xs text-muted-foreground">or</span>
+            <div className="h-px flex-1 bg-border" />
+          </div>
+          <form onSubmit={onSubmit} className="space-y-4">
             {mode === "signup" && (
               <div className="space-y-1.5">
                 <Label htmlFor="dn">{t("display_name")}</Label>

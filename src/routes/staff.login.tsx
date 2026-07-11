@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { GoogleSignInButton } from "@/components/GoogleSignInButton";
 
 export const Route = createFileRoute("/staff/login")({
   component: StaffLogin,
@@ -98,7 +99,15 @@ function StaffLogin() {
           <p className="mt-1 text-sm text-muted-foreground">
             For Police and Department of Women & Children Welfare staff only.
           </p>
-          <form onSubmit={onSubmit} className="mt-6 space-y-4">
+          <div className="mt-6">
+            <GoogleSignInButton />
+          </div>
+          <div className="my-4 flex items-center gap-3">
+            <div className="h-px flex-1 bg-border" />
+            <span className="text-xs text-muted-foreground">or</span>
+            <div className="h-px flex-1 bg-border" />
+          </div>
+          <form onSubmit={onSubmit} className="space-y-4">
             <div className="space-y-1.5">
               <Label htmlFor="em">{t("email")}</Label>
               <Input
