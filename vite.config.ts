@@ -24,9 +24,11 @@ export default defineConfig({
         navigateFallbackDenylist: [
           /^\/api\//,
           /^\/__/,
+          /^\/~oauth/,
           /^\/sw\.js$/,
           /^\/manifest\.webmanifest$/,
         ],
+
         cleanupOutdatedCaches: true,
         skipWaiting: true,
         clientsClaim: true,

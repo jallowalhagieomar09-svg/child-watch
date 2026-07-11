@@ -6,6 +6,7 @@ import { I18nProvider } from "@/lib/i18n";
 import { AuthProvider } from "@/hooks/useAuth";
 import { OnlineStatusBanner } from "@/components/OnlineStatusBanner";
 import { InstallPrompt } from "@/components/InstallPrompt";
+import { ThemeProvider } from "@/hooks/useTheme";
 import { registerServiceWorker } from "@/lib/pwa";
 
 import appCss from "../styles.css?url";
@@ -92,15 +93,17 @@ function RootComponent() {
   }, []);
 
   return (
-    <I18nProvider>
-      <AuthProvider>
-        <TooltipProvider>
-          <OnlineStatusBanner />
-          <Outlet />
-          <InstallPrompt />
-          <Toaster richColors position="top-center" />
-        </TooltipProvider>
-      </AuthProvider>
-    </I18nProvider>
+    <ThemeProvider>
+      <I18nProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <OnlineStatusBanner />
+            <Outlet />
+            <InstallPrompt />
+            <Toaster richColors position="top-center" />
+          </TooltipProvider>
+        </AuthProvider>
+      </I18nProvider>
+    </ThemeProvider>
   );
 }
