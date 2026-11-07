@@ -13,18 +13,6 @@ import {
   updatePending,
   type PendingReport,
 } from "@/lib/offline-queue";
-import { transcribeAudio } from "@/lib/transcribe.functions";
-
-async function blobToBase64(blob: Blob): Promise<string> {
-  const buf = await blob.arrayBuffer();
-  let binary = "";
-  const bytes = new Uint8Array(buf);
-  const chunk = 0x8000;
-  for (let i = 0; i < bytes.length; i += chunk) {
-    binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
-  }
-  return btoa(binary);
-}
 
 async function flushOne(r: PendingReport): Promise<boolean> {
   try {
@@ -46,26 +34,13 @@ async function flushOne(r: PendingReport): Promise<boolean> {
         continue;
       }
 
-      let transcription: string | null = null;
-      if (m.kind === "audio") {
-        try {
-          const b64 = await blobToBase64(m.blob);
-          const result = await transcribeAudio({
-            data: { audioBase64: b64, mimeType: m.mimeType || "audio/webm" },
-          });
-          if (result.text) transcription = result.text;
-        } catch (e) {
-          console.error("offline-sync transcription failed", e);
-        }
-      }
-
       await supabase.from("report_media").insert({
         report_id: reportId,
         kind: m.kind,
         storage_path: path,
         mime_type: m.mimeType,
         size_bytes: m.blob.size,
-        transcription,
+        transcription: null,
       });
     }
 
