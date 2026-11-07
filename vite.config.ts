@@ -68,20 +68,6 @@ export default defineConfig({
               expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 30 },
             },
           },
-          {
-            // Supabase REST reads (GET only) — useful for stats/tracking lookup offline.
-            urlPattern: ({ url, request }) =>
-              request.method === "GET" &&
-              url.hostname.endsWith(".supabase.co") &&
-              (url.pathname.startsWith("/rest/") || url.pathname.startsWith("/storage/v1/object/public/")),
-            handler: "NetworkFirst",
-            options: {
-              cacheName: "supabase-get-cache",
-              networkTimeoutSeconds: 4,
-              expiration: { maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 },
-              cacheableResponse: { statuses: [0, 200] },
-            },
-          },
         ],
       },
     }),
