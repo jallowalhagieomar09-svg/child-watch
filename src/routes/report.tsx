@@ -20,11 +20,9 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useAuth } from "@/hooks/useAuth";
 import { useI18n } from "@/lib/i18n";
 import { CATEGORIES, generateTrackingCode, type ReportCategory } from "@/lib/report-utils";
 import { supabase } from "@/integrations/supabase/client";
-import { transcribeAudio } from "@/lib/transcribe.functions";
 import { enqueueReport } from "@/lib/offline-queue";
 
 export const Route = createFileRoute("/report")({
@@ -40,7 +38,6 @@ type MediaItem = {
 
 function ReportFlow() {
   const { t, lang } = useI18n();
-  const { user } = useAuth();
   const [step, setStep] = useState(0);
 
   const [category, setCategory] = useState<ReportCategory | null>(null);
@@ -143,17 +140,6 @@ function ReportFlow() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const fileToBase64 = (file: File): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const res = reader.result as string;
-        resolve(res.split(",")[1] ?? "");
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-
   const submit = async () => {
     if (!category) return;
     setSubmitting(true);
@@ -234,26 +220,13 @@ function ReportFlow() {
           continue;
         }
 
-        let transcription: string | null = null;
-        if (m.kind === "audio") {
-          try {
-            const b64 = await fileToBase64(m.file);
-            const result = await transcribeAudio({
-              data: { audioBase64: b64, mimeType: m.file.type || "audio/webm" },
-            });
-            if (result.text) transcription = result.text;
-          } catch (e) {
-            console.error("transcription failed", e);
-          }
-        }
-
         await supabase.from("report_media").insert({
           report_id: reportId,
           kind: m.kind,
           storage_path: path,
           mime_type: m.file.type,
           size_bytes: m.file.size,
-          transcription,
+          transcription: null,
         });
       }
 
