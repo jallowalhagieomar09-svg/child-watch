@@ -3,11 +3,6 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
-const TranscribeSchema = z.object({
-  audioBase64: z.string().min(1).max(20_000_000),
-  mimeType: z.string().min(1).max(120),
-});
-
 const RetranscribeSchema = z.object({
   mediaId: z.string().uuid(),
 });
@@ -55,20 +50,6 @@ async function callGateway(audioBase64: string, mimeType: string) {
 }
 
 /**
- * Transcribe an uploaded audio chunk (base64) — used during report submission.
- */
-export const transcribeAudio = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => TranscribeSchema.parse(input))
-  .handler(async ({ data }) => {
-    try {
-      return await callGateway(data.audioBase64, data.mimeType);
-    } catch (err) {
-      console.error("Transcription error:", err);
-      return { text: "", error: "Transcription service unavailable" };
-    }
-  });
-
-/**
  * Staff-only: re-transcribe an existing report_media row by id.
  * Downloads the file from storage server-side and updates the transcription column.
  */
@@ -85,11 +66,21 @@ export const retranscribeMedia = createServerFn({ method: "POST" })
     // Use admin client to read media + storage regardless of RLS quirks.
     const { data: media, error: mErr } = await supabaseAdmin
       .from("report_media")
-      .select("id, kind, storage_path, mime_type")
+      .select("id, report_id, kind, storage_path, mime_type")
       .eq("id", data.mediaId)
       .maybeSingle();
     if (mErr || !media) return { text: "", error: "Media not found" };
     if (media.kind !== "audio") return { text: "", error: "Not an audio file" };
+
+    // Enforce the caller's agency-level report visibility before using the
+    // service-role client to download evidence. This prevents cross-agency
+    // staff from retranscribing media they are not permitted to view.
+    const { data: visibleReport, error: reportError } = await supabase
+      .from("reports")
+      .select("id")
+      .eq("id", media.report_id)
+      .maybeSingle();
+    if (reportError || !visibleReport) return { text: "", error: "Forbidden" };
 
     const { data: file, error: dlErr } = await supabaseAdmin.storage
       .from("report-media")
